@@ -1,1 +1,1 @@
-web: python run_ui.py --host=0.0.0.0 --port=$PORT
+web: . /opt/venv/bin/activate && python run_ui.py --host=0.0.0.0 --port=$PORT
