@@ -1170,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupTabs() {
     const chatsTab = document.getElementById('chats-tab');
     const tasksTab = document.getElementById('tasks-tab');
+    const tradingTab = document.getElementById('trading-tab');
 
     if (chatsTab && tasksTab) {
         chatsTab.addEventListener('click', function() {
@@ -1179,6 +1180,12 @@ function setupTabs() {
         tasksTab.addEventListener('click', function() {
             activateTab('tasks');
         });
+
+        if (tradingTab) {
+            tradingTab.addEventListener('click', function() {
+                activateTab('trading');
+            });
+        }
     } else {
         console.error('Tab elements not found');
         setTimeout(setupTabs, 100); // Retry setup
@@ -1188,8 +1195,10 @@ function setupTabs() {
 function activateTab(tabName) {
     const chatsTab = document.getElementById('chats-tab');
     const tasksTab = document.getElementById('tasks-tab');
+    const tradingTab = document.getElementById('trading-tab');
     const chatsSection = document.getElementById('chats-section');
     const tasksSection = document.getElementById('tasks-section');
+    const tradingSection = document.getElementById('trading-section');
 
     // Get current context to preserve before switching
     const currentContext = context;
@@ -1205,8 +1214,10 @@ function activateTab(tabName) {
     // Reset all tabs and sections
     chatsTab.classList.remove('active');
     tasksTab.classList.remove('active');
+    if (tradingTab) tradingTab.classList.remove('active');
     chatsSection.style.display = 'none';
     tasksSection.style.display = 'none';
+    if (tradingSection) tradingSection.style.display = 'none';
 
     // Remember the last active tab in localStorage
     localStorage.setItem('activeTab', tabName);
@@ -1252,6 +1263,16 @@ function activateTab(tabName) {
             lastSelectedTask !== currentContext &&
             availableTasks.some(task => task.id === lastSelectedTask)) {
             setContext(lastSelectedTask);
+        }
+    } else if (tabName === 'trading') {
+        if (tradingTab && tradingSection) {
+            tradingTab.classList.add('active');
+            tradingSection.style.display = '';
+            
+            // Initialize trading system if not already done
+            if (window.tradingSystem && window.tradingSystem.initialize) {
+                window.tradingSystem.initialize();
+            }
         }
     }
 

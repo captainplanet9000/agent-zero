@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/history.css">
     <link rel="stylesheet" href="css/scheduler-datepicker.css">
     <link rel="stylesheet" href="css/tunnel.css">
+    <link rel="stylesheet" href="css/trading.css">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -123,6 +124,7 @@
     <script type="text/javascript" src="js/file_browser.js"></script>
     <script type="text/javascript" src="js/modal.js"></script>
     <script type="text/javascript" src="js/tunnel.js"></script>
+    <script type="text/javascript" src="js/trading.js"></script>
 </head>
 
 <body class="dark-mode">
@@ -175,6 +177,7 @@
                     <div class="tabs">
                         <div class="tab active" id="chats-tab">Chats</div>
                         <div class="tab" id="tasks-tab">Tasks</div>
+                        <div class="tab" id="trading-tab">Trading</div>
                     </div>
                 </div>
 
@@ -253,6 +256,59 @@
                         </ul>
                         <div class="empty-list-message" x-show="tasks.length === 0">
                             <p><i>No tasks to list.</i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Section -->
+                <div class="config-section" id="trading-section" x-data="{
+                    tradingAgents: [],
+                    portfolio: { total_value: 0, available_cash: 0, pnl: 0 },
+                    systemStatus: { connected: false },
+                    activeTab: 'dashboard'
+                }" 
+                style="display: none;">
+                    <div id="trading-dashboard" class="trading-container">
+                        <!-- Trading dashboard content will be loaded here -->
+                        <div class="trading-quick-actions">
+                            <button class="trading-button primary" onclick="tradingSystem.refreshPortfolio()">
+                                <i class="fas fa-refresh"></i> Refresh
+                            </button>
+                            <button class="trading-button success" onclick="tradingSystem.createAgent()">
+                                <i class="fas fa-plus"></i> New Agent
+                            </button>
+                            <button class="trading-button secondary" onclick="tradingSystem.runAnalysis()">
+                                <i class="fas fa-chart-line"></i> Analyze
+                            </button>
+                        </div>
+                        
+                        <div class="trading-summary">
+                            <div class="summary-card">
+                                <div class="summary-label">Portfolio</div>
+                                <div class="summary-value" x-text="'$' + portfolio.total_value.toFixed(2)">$0.00</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">Agents</div>
+                                <div class="summary-value" x-text="tradingAgents.length">0</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-label">P&L</div>
+                                <div class="summary-value" :class="portfolio.pnl >= 0 ? 'positive' : 'negative'" 
+                                     x-text="'$' + portfolio.pnl.toFixed(2)">$0.00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="trading-agents-list">
+                            <h4>Active Agents</h4>
+                            <template x-for="agent in tradingAgents">
+                                <div class="agent-item">
+                                    <span class="agent-name" x-text="agent.name">Agent Name</span>
+                                    <span class="agent-status" x-text="agent.status">Status</span>
+                                </div>
+                            </template>
+                            <div x-show="tradingAgents.length === 0" class="empty-message">
+                                <i>No trading agents created yet.</i>
+                            </div>
                         </div>
                     </div>
                 </div>
